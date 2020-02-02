@@ -1,6 +1,10 @@
-'use strict';
+(function (global, factory) {
+    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+    typeof define === 'function' && define.amd ? define('gameScreen', factory) :
+    (global = global || self, global.gameScreen = factory());
+}(this, (function () { 'use strict';
 
-const element = document.createElement('div');
+    const element = document.createElement('div');
     element.innerHTML = `
     <div class="c-btn back">❮ Home</div>
     <header class="header">
@@ -36,8 +40,6 @@ const element = document.createElement('div');
     </section>
 `;
 
+    return element;
 
-
-export default element;
-
-
+})));
