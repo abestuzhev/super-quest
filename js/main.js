@@ -1,10 +1,9 @@
 
-import {changeScreen} from './util.js';
-import welcomeScreen from './welcome-screen.js';
-import gameScreen from './game-screen.js';
+import {game} from './game.js';
+import changeScreen from '.util.js';
 
 
-changeScreen(welcomeScreen);
+changeScreen(game);
 // const elem = render(welcomeScreen);
 
 

@@ -4,7 +4,7 @@
 // Load plugins
 const autoprefixer = require("gulp-autoprefixer");
 const browsersync = require("browser-sync").create();
-const eslint = require("gulp-eslint");
+// const eslint = require("gulp-eslint");
 const gulp = require("gulp");
 const plumber = require("gulp-plumber");
 const sass = require("gulp-sass");
@@ -36,7 +36,7 @@ function css() {
     .pipe(plumber())
     .pipe(sass())
     .pipe(autoprefixer())
-    .pipe(gulp.dest("./css/"))
+    .pipe(gulp.dest("./build/css/"))
     .pipe(browsersync.stream());
 }
 
@@ -53,7 +53,7 @@ function css() {
 // Transpile, concatenate and minify scripts
 function js() {
   return gulp
-  .src("./js/*.js")
+  .src("./js/main.js")
   .pipe(plumber())
   .pipe(rollup({ plugins: [babel(), resolve(), commonjs()] }, 'umd'))
   .pipe(gulp.dest("./build/js/"))
