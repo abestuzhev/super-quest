@@ -1,80 +1,66 @@
-"use strict";
+//npm install -DE gulp gulp-sass gulp-autoprefixer gulp-plumber gulp-sourcemaps gulp-better-rollup gulp-plumber browser-sync
 
-// gulp gulp-sass gulp-plumber gulp-eslint browser-sync autoprefixer
-// Load plugins
-const autoprefixer = require("gulp-autoprefixer");
-const browsersync = require("browser-sync").create();
-// const eslint = require("gulp-eslint");
-const gulp = require("gulp");
-const plumber = require("gulp-plumber");
-const sass = require("gulp-sass");
-const rollup = require("gulp-better-rollup");
-const babel = require('rollup-plugin-babel');
-const resolve = require('rollup-plugin-node-resolve');
-const commonjs = require('rollup-plugin-commonjs');
-
-// BrowserSync
-function browserSync(done) {
-  browsersync.init({
-    server: {
-      baseDir: "./"
-    },
-    port: 3000
-  });
-  done();
-}
-
-function browserSyncReload(done) {
-  browsersync.reload();
-  done();
-}
-
-// CSS task
-function css() {
-  return gulp
-    .src("./scss/**/*.scss")
-    .pipe(plumber())
-    .pipe(sass())
-    .pipe(autoprefixer())
-    .pipe(gulp.dest("./build/css/"))
-    .pipe(browsersync.stream());
-}
-
-// Lint scripts
-// function scriptsLint() {
-//   return gulp
-//     .src(["./js/**/*.js", "./gulpfile.js"])
-//     .pipe(plumber())
-//     .pipe(eslint())
-//     .pipe(eslint.format())
-//     .pipe(eslint.failAfterError());
-// }
-
-// Transpile, concatenate and minify scripts
-function js() {
-  return gulp
-  .src("./js/main.js")
-  .pipe(plumber())
-  .pipe(rollup({ plugins: [babel(), resolve(), commonjs()] }, 'umd'))
-  .pipe(gulp.dest("./build/js/"))
-  .pipe(browsersync.stream());
-}
+//plugins for development
+var gulp = require('gulp'),
+    sass = require('gulp-sass'),
+    prefix = require('gulp-autoprefixer'),
+    rollup = require('gulp-better-rollup'),
+    plumber = require('gulp-plumber'),
+    sourcemaps = require('gulp-sourcemaps'),
+    browserSync = require('browser-sync').create();
 
 
-// Watch files
-function watchFiles() {
-  gulp.watch("./scss/**/*.scss", css);
-  gulp.watch("./js/**/*.js", js);
-  // gulp.watch(browserSyncReload);
-}
 
-// define complex tasks
+gulp.task('sass', function(){
+    return gulp.src('scss/**/*.scss')
+        .pipe(plumber())
+        .pipe(sass().on('error', sass.logError))
+        .pipe(prefix('last 3 version'))
+        .pipe(gulp.dest('./build/css/'))
+        .pipe(browserSync.stream())
+});
 
-// export tasks
-// exports.css = css;
-// exports.js = js;
-// exports.watchFiles = watchFiles;
-exports.default = gulp.series(
-  gulp.parallel(css, browserSync, browserSyncReload, js), 
-  watchFiles
-);
+gulp.task('js', function(){
+    return gulp.src('js/main.js')
+        .pipe(plumber())
+        .pipe(sourcemaps.init())
+        .pipe(rollup({}, 'iife'))
+        .pipe(sourcemaps.write())
+        .pipe(gulp.dest('build/js'))
+        .pipe(browserSync.stream())
+});
+
+gulp.task('html', function(){
+    return gulp.src('**/*.html')
+        .pipe(browserSync.stream())
+});
+
+gulp.task('css', function(){
+    return gulp.src('css/**/*.css')
+        .pipe(browserSync.stream())
+});
+
+gulp.task('browser-sync', function(){
+    browserSync.init({
+        port: 3002,
+        server: {
+            baseDir: './'
+        }
+    })
+});
+
+// gulp.task('connect', function() {
+//     connect.server({
+//         root: '',
+//         livereload: true
+//     });
+// });
+
+gulp.task('watch', function(){
+    gulp.watch('scss/**/*.scss', ['sass']);
+    gulp.watch('js/**/*.js', ['js']);
+    gulp.watch('**/*.html', ['html']);
+    gulp.watch('css/**/*.css', ['css']);
+});
+
+gulp.task('default', ['html', 'css', 'sass', 'js', 'browser-sync', 'watch']);

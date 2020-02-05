@@ -9,6 +9,5 @@ const getLevel = (num) => {
     quest[`level-${num}`];
 }
 
-getLevel(0);
 
 export default element;
