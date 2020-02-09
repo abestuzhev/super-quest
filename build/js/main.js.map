@@ -1,0 +1,1 @@
+{"version":3,"names":[],"mappings":"","sources":["main.js"],"sourcesContent":["'use strict';\r\nimport {changeView} from './util.js';\r\nimport game from './game.js';\r\n\r\nchangeView(game);\r\n"],"file":"main.js"}

@@ -10,8 +10,9 @@ const plumber = require("gulp-plumber");
 const sass = require("gulp-sass");
 const rollup = require("gulp-better-rollup");
 const babel = require('rollup-plugin-babel');
-const resolve = require('rollup-plugin-node-resolve');
+const resolve = require('@rollup/plugin-node-resolve');
 const commonjs = require('rollup-plugin-commonjs');
+const sourcemaps = require('gulp-sourcemaps');
 
 // BrowserSync
 function browserSync(done) {
@@ -55,7 +56,10 @@ function js() {
   return gulp
   .src("./js/main.js")
   .pipe(plumber())
-  .pipe(rollup({ plugins: [babel(), resolve(), commonjs()] }, 'umd'))
+  // .pipe(rollup({ entry: './js/main.js', plugins: [babel(), resolve(), commonjs()] }, 'umd'))
+  .pipe(sourcemaps.init())
+  .pipe(rollup({}, 'iife'))
+  .pipe(sourcemaps.write(''))
   .pipe(gulp.dest("./build/js/"))
   .pipe(browsersync.stream());
 }
@@ -64,7 +68,7 @@ function js() {
 // Watch files
 function watchFiles() {
   gulp.watch("./scss/**/*.scss", css);
-  gulp.watch("./js/**/*.js", js);
+  gulp.watch("./js/", js);
   // gulp.watch(browserSyncReload);
 }
 
